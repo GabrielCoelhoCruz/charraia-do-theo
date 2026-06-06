@@ -653,6 +653,145 @@ section { padding-block: clamp(72px, 11vw, 148px); position: relative; }
   border-color: var(--creme);
 }
 
+/* organizer access — discrete but clear for hosts */
+.organizer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  text-align: left;
+  transition:
+    transform .28s var(--ease),
+    box-shadow .28s var(--ease),
+    border-color .28s var(--ease),
+    background .28s var(--ease);
+}
+.organizer-link:focus-visible {
+  outline: 2px solid var(--mostarda-suave);
+  outline-offset: 3px;
+}
+.organizer-link__icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: rgba(248, 241, 231, .14);
+  color: var(--creme);
+}
+.organizer-link__icon svg { width: 20px; height: 20px; }
+.organizer-link__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.organizer-link__kicker {
+  font-size: .68rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  opacity: .72;
+}
+.organizer-link__title {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: .01em;
+}
+.organizer-link__go {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  opacity: .55;
+  transition: transform .28s var(--ease), opacity .28s var(--ease);
+}
+.organizer-link__go svg { width: 16px; height: 16px; }
+.organizer-link:hover .organizer-link__go,
+.organizer-link:focus-visible .organizer-link__go {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+.organizer-link--rsvp {
+  margin-top: 1.75rem;
+  padding: 12px 16px 12px 12px;
+  max-width: 100%;
+  border-radius: 100px;
+  color: var(--creme);
+  background: rgba(248, 241, 231, .08);
+  border: 1px solid rgba(248, 241, 231, .18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+.organizer-link--rsvp .organizer-link__kicker { color: var(--mostarda-suave); }
+.organizer-link--rsvp .organizer-link__icon {
+  background: rgba(226, 180, 104, .18);
+  color: var(--mostarda-suave);
+}
+.organizer-link--rsvp:hover,
+.organizer-link--rsvp:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(248, 241, 231, .12);
+  border-color: rgba(226, 180, 104, .45);
+  box-shadow: 0 14px 28px -18px rgba(0, 0, 0, .45);
+}
+
+.organizer-link--foot {
+  position: relative;
+  margin: 2.25rem auto 0;
+  padding: 16px 18px 16px 16px;
+  width: min(100%, 360px);
+  border-radius: 16px;
+  color: var(--creme);
+  background:
+    linear-gradient(135deg, rgba(248, 241, 231, .11), rgba(248, 241, 231, .05));
+  border: 1px dashed rgba(248, 241, 231, .28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .08),
+    0 18px 36px -24px rgba(0, 0, 0, .55);
+  overflow: visible;
+}
+.organizer-link--foot .organizer-link__kicker { color: rgba(248, 241, 231, .62); }
+.organizer-link--foot .organizer-link__title { color: var(--creme); }
+.organizer-link--foot .organizer-link__icon {
+  background: rgba(214, 154, 60, .2);
+  color: var(--mostarda-suave);
+}
+.organizer-link--foot:hover,
+.organizer-link--foot:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(226, 180, 104, .5);
+  background:
+    linear-gradient(135deg, rgba(248, 241, 231, .16), rgba(248, 241, 231, .08));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .1),
+    0 22px 40px -22px rgba(0, 0, 0, .6);
+}
+.organizer-link__perf {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--terracota-escuro);
+  transform: translateY(-50%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+}
+.organizer-link__perf--l { left: -7px; }
+.organizer-link__perf--r { right: -7px; }
+
+@media (max-width: 820px) {
+  .organizer-link--rsvp {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+}
+
 /* ============================================================
    Scroll reveal
    ============================================================ */
