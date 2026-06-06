@@ -1,0 +1,7 @@
+{
+  "name": "charraia-do-theo",
+  "private": true,
+  "scripts": {
+    "sync-catalog": "node scripts/sync-catalog.mjs"
+  }
+}

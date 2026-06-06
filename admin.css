@@ -194,7 +194,7 @@
 
 .admin-table tr:last-child td { border-bottom: none; }
 
-.admin-table .pix-chip {
+.admin-table .email-chip {
   display: inline-block;
   padding: 4px 10px;
   border-radius: 999px;

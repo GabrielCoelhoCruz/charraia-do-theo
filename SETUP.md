@@ -12,7 +12,7 @@ Guia para conectar o site à planilha Google. Faça isso **uma vez** antes de co
 1. Na planilha: **Extensões → Apps Script**.
 2. Apague o conteúdo padrão de `Code.gs`.
 3. Copie todo o arquivo [`google-apps-script/Code.gs`](google-apps-script/Code.gs) do projeto e cole no editor.
-4. Troque a senha do admin na linha `ADMIN_KEY` (ex: `charraia-theo-2026`).
+4. A senha do admin está em `ADMIN_KEY` (padrão: `xadotheo`). Altere se quiser.
 5. Salve (Ctrl+S).
 
 ## 3. Rodar o setup (uma vez)
@@ -41,22 +41,33 @@ Guia para conectar o site à planilha Google. Faça isso **uma vez** antes de co
 const SHEETS_API_URL = "https://script.google.com/macros/s/SEU_ID/exec";
 ```
 
-## 6. Testar localmente
+## 6. Catálogo de presentes
 
-1. Abra [`Arraial do Theo.html`](Arraial%20do%20Theo.html) no navegador (ou use um servidor local).
+A fonte única é [`catalog.json`](catalog.json). Ao editar presentes ou o e-mail de presente:
+
+```bash
+node scripts/sync-catalog.mjs
+# ou: npm run sync-catalog
+```
+
+Isso atualiza `gifts-catalog.js` e o bloco `CATALOG` em `Code.gs`. Depois, cole o `Code.gs` atualizado no Apps Script e republicue.
+
+## 7. Testar localmente
+
+1. Abra o site (local ou Vercel).
 2. Preencha o RSVP de teste e confirme.
-3. Abra o admin: `admin.html?key=SUA_SENHA` (a mesma do `ADMIN_KEY`).
+3. Abra o admin: [`admin.html`](admin.html) — senha: `xadotheo` (ou a que você definiu em `ADMIN_KEY`).
 4. Verifique se a confirmação aparece e se o estoque da lista atualiza.
 
-## 7. Publicar online (Vercel)
+## 8. Publicar online (Vercel)
 
 1. Crie conta em [vercel.com](https://vercel.com).
 2. **Add New → Project** e importe esta pasta (ou envie via GitHub).
 3. Framework: **Other** — sem build command.
 4. Deploy.
 5. URLs úteis:
-   - Site: `https://seu-projeto.vercel.app/Arraial%20do%20Theo.html`
-   - Admin: `https://seu-projeto.vercel.app/admin.html?key=SUA_SENHA`
+   - Site: `https://seu-projeto.vercel.app/`
+   - Admin: `https://seu-projeto.vercel.app/admin.html`
 
 Guarde o link do admin nos favoritos. **Não** coloque esse link no convite público.
 
@@ -71,6 +82,6 @@ Guarde o link do admin nos favoritos. **Não** coloque esse link no convite púb
 | Problema | Solução |
 |----------|---------|
 | "API não configurada" | Cole a URL do Web App em `api-client.js` |
-| "Acesso restrito" no admin | Use `?key=` igual ao `ADMIN_KEY` no Code.gs |
+| Admin não carrega dados | Republicue o `Code.gs` com `ADMIN_KEY` igual à senha do admin |
 | Confirmação não salva | Rode `setupSheets()` e republicue o Web App |
 | Estoque não atualiza | Nova implantação após mudar o script; limpe cache do navegador |

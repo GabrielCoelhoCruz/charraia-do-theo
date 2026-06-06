@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="arraial.css" />
+<link rel="stylesheet" href="rsvp-gifts.css" />
 </head>
 <body>
 
@@ -40,7 +41,7 @@
         </div>
         <figure class="hero-figure">
           <div class="frame">
-            <image-slot id="hero-photo" shape="rect" src="img.jpg" placeholder="Foto da barriga 🤍" placeholder-caption="arraste uma foto"></image-slot>
+            <img id="hero-photo" src="img.jpg" alt="Foto da barriga do Theo" width="800" height="1000" loading="eager" />
           </div>
         </figure>
       </div>
@@ -53,7 +54,7 @@
       <div class="wrap about-grid">
         <div class="about-figure reveal">
           <div class="frame">
-            <image-slot id="belly-photo" shape="rect" src="img.jpg" placeholder="Foto da barriga ou ultrassom" placeholder-caption="arraste sua foto aqui"></image-slot>
+            <img id="belly-photo" src="img.jpg" alt="Foto da barriga ou ultrassom do Theo" width="800" height="1000" loading="lazy" />
             <span class="tag">à espera do Theo</span>
           </div>
         </div>
@@ -195,11 +196,11 @@
               </div>
 
               <div class="gift-panel" data-panel="email" hidden>
-                <div class="pix-card">
-                  <p class="pix-k">Presente por e-mail</p>
-                  <div class="pix-num" id="gift-email">taynamj@gmail.com</div>
-                  <button type="button" class="pix-copy" id="email-copy">Copiar e-mail</button>
-                  <p class="pix-note">Manda o valor que quiser para esse e-mail, com todo carinho. 🤍</p>
+                <div class="email-card">
+                  <p class="email-k">Presente por e-mail</p>
+                  <div class="email-addr" id="gift-email">taynamj@gmail.com</div>
+                  <button type="button" class="email-copy" id="email-copy">Copiar e-mail</button>
+                  <p class="email-note">Manda o valor que quiser para esse e-mail, com todo carinho. 🤍</p>
                 </div>
               </div>
             </div>
@@ -226,11 +227,11 @@
       <div class="bunting" data-count="13"></div>
       <div class="wrap">
         <h2>Te espero no <em>Charraiá</em> <span class="emo">🌽</span></h2>
-        <a class="contact" href="https://wa.me/5511999999999" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 9.5c0 4 2 6 6 6"/></svg>
-          Dúvidas? Chama no WhatsApp · (11) 99999-9999
-        </a>
         <div class="made">feito com amor pra chegada do Theo</div>
+        <p class="foot-dev">
+          Site desenvolvido por
+          <a href="https://github.com/GabrielCoelhoCruz" target="_blank" rel="noopener">Gabriel Coelho Cruz</a>
+        </p>
       </div>
     </footer>
 
@@ -269,20 +270,10 @@
     </div>
   </div>
 
-  <div id="tweaks-root"></div>
-
-  <script src="image-slot.js"></script>
   <script src="gifts-catalog.js"></script>
   <script src="api-client.js"></script>
   <script src="gifts.js"></script>
   <script src="arraial.js"></script>
-
-  <!-- Tweaks (React island) -->
-  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-  <script type="text/babel" src="tweaks-panel.jsx"></script>
-  <script type="text/babel" src="tweaks-app.jsx"></script>
 
 </body>
 </html>

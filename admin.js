@@ -6,10 +6,15 @@
   "use strict";
 
   const ADMIN_PASSWORD = "xadotheo";
-  const API_ADMIN_KEY = "charraia-theo-2026";
   const SESSION_KEY = "charraia_admin_ok";
 
   let adminData = null;
+
+  function isEmailGiftMode(mode) {
+    return window.__charraiaShared
+      ? window.__charraiaShared.isEmailGiftMode(mode)
+      : mode === "email" || mode === "pix";
+  }
 
   function isLoggedIn() {
     return sessionStorage.getItem(SESSION_KEY) === "1";
@@ -36,6 +41,14 @@
       .replace(/"/g, "&quot;");
   }
 
+  function formatGiftDisplay(row, asHtml) {
+    if (isEmailGiftMode(row.giftMode)) {
+      return asHtml ? '<span class="email-chip">E-mail 🤍</span>' : "E-mail";
+    }
+    const label = row.giftsLabel || "—";
+    return asHtml ? escapeHtml(label) : label;
+  }
+
   function showLogin(showError) {
     document.getElementById("admin-loading").hidden = true;
     document.getElementById("admin-login").hidden = false;
@@ -55,7 +68,7 @@
     const stats = [
       { num: summary.confirmations, label: "Confirmações" },
       { num: summary.totalGuests, label: "Pessoas no total" },
-      { num: summary.emailCount != null ? summary.emailCount : summary.pixCount, label: "E-mail" },
+      { num: summary.emailCount || 0, label: "E-mail" },
       { num: summary.giftsReserved, label: "Itens reservados" },
     ];
     el.innerHTML = stats.map((s) =>
@@ -91,14 +104,11 @@
         <tbody>
           ${rows.map((r) => {
             const diet = r.diet ? escapeHtml(r.diet) : "—";
-            const gift = (r.giftMode === "pix" || r.giftMode === "email")
-              ? '<span class="pix-chip">E-mail 🤍</span>'
-              : escapeHtml(r.giftsLabel || "—");
             return `<tr>
               <td>${escapeHtml(r.name)}</td>
               <td>${r.guests}</td>
               <td>${diet}</td>
-              <td>${gift}</td>
+              <td>${formatGiftDisplay(r, true)}</td>
               <td>${formatDate(r.createdAt)}</td>
             </tr>`;
           }).join("")}
@@ -107,12 +117,11 @@
 
     cards.innerHTML = rows.map((r) => {
       const diet = r.diet ? escapeHtml(r.diet) : "—";
-      const gift = (r.giftMode === "pix" || r.giftMode === "email") ? "E-mail 🤍" : escapeHtml(r.giftsLabel || "—");
       return `<article class="admin-card">
         <div class="admin-card-name">${escapeHtml(r.name)}</div>
         <div class="admin-card-row"><b>Vêm:</b> ${r.guests}</div>
         <div class="admin-card-row"><b>Dieta:</b> ${diet}</div>
-        <div class="admin-card-row"><b>Presente:</b> ${gift}</div>
+        <div class="admin-card-row"><b>Presente:</b> ${formatGiftDisplay(r, false)}</div>
         <div class="admin-card-row"><b>Quando:</b> ${formatDate(r.createdAt)}</div>
       </article>`;
     }).join("");
@@ -155,12 +164,11 @@
     const header = ["Nome", "Vêm", "Dieta", "Presente", "Quando"];
     const lines = [header.join(";")];
     adminData.rows.forEach((r) => {
-      const gift = (r.giftMode === "pix" || r.giftMode === "email") ? "E-mail" : (r.giftsLabel || "");
       const row = [
         r.name,
         r.guests,
         r.diet || "",
-        gift,
+        formatGiftDisplay(r, false),
         r.createdAt || "",
       ].map((c) => '"' + String(c).replace(/"/g, '""') + '"');
       lines.push(row.join(";"));
@@ -189,7 +197,7 @@
     document.getElementById("admin-app").hidden = true;
 
     try {
-      const data = await window.__charraiaApi.loadAdminData(API_ADMIN_KEY);
+      const data = await window.__charraiaApi.loadAdminData(ADMIN_PASSWORD);
       if (!data.ok) {
         showLogin(false);
         return;

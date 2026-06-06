@@ -166,9 +166,7 @@
 
         const giftSlot = document.getElementById("success-gift");
         if (giftSlot) {
-          const msg = result.message ||
-            (window.__charraiaGifts && window.__charraiaGifts.commit()) ||
-            "";
+          const msg = result.message || "";
           if (msg) {
             giftSlot.textContent = msg;
             giftSlot.hidden = false;

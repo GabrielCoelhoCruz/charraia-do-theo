@@ -8,7 +8,7 @@
   const GIFTS = catalog.GIFTS;
   const GROUP_LABELS = catalog.GROUP_LABELS;
 
-  const GIFT_EMAIL = "taynamj@gmail.com";
+  const GIFT_EMAIL = catalog.GIFT_EMAIL || "taynamj@gmail.com";
   const TOTAL_GIFT_UNITS = GIFTS.reduce((s, g) => s + g.qty, 0);
 
   const BRANDS = {
@@ -246,22 +246,6 @@
       }));
   }
 
-  function buildGiftMessage() {
-    if (mode === "email") {
-      return "Obrigada pelo carinho! 🤍 É só mandar para " + GIFT_EMAIL + ".";
-    }
-    const parts = GIFTS.filter((g) => picked[g.id] > 0).map((g) => `${picked[g.id]}x ${g.name}`);
-    if (!parts.length) return "";
-    const joined = parts.length === 1
-      ? parts[0]
-      : parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
-    return "Você vai levar: " + joined + ". Que amor! 🤍";
-  }
-
-  function commit() {
-    return buildGiftMessage();
-  }
-
   function clearPickedAfterSubmit() {
     Object.keys(picked).forEach((id) => delete picked[id]);
     rebuildAllRows();
@@ -314,7 +298,6 @@
   } else { init(); }
 
   window.__charraiaGifts = {
-    commit,
     getPickedForSubmit,
     clearPickedAfterSubmit,
     refreshClaims,

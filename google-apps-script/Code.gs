@@ -3,38 +3,39 @@
  * Paste into Extensions → Apps Script on your spreadsheet.
  * Run setupSheets() once, then Deploy → Web app.
  *
- * Keep CATALOG in sync with gifts-catalog.js in the project repo.
+ * Keep CATALOG in sync with catalog.json (run: node scripts/sync-catalog.mjs).
  */
 
-const ADMIN_KEY = "charraia-theo-2026";
+const ADMIN_KEY = "xadotheo";
+const GIFT_EMAIL = "taynamj@gmail.com";
 
 /** @type {Object.<string, {name: string, qty: number}>} */
 const CATALOG = {
-  "mordedor":     { name: "Mordedor",                     qty: 1 },
-  "naninha":      { name: "Naninha",                      qty: 1 },
-  "saboneteira":  { name: "Saboneteira",                  qty: 1 },
+  "mordedor": { name: "Mordedor", qty: 1 },
+  "naninha": { name: "Naninha", qty: 1 },
+  "saboneteira": { name: "Saboneteira", qty: 1 },
   "escova-pente": { name: "Kit escova e pente de cabelo", qty: 1 },
-  "termometro":   { name: "Termômetro",                   qty: 1 },
-  "colher":       { name: "Colher de silicone p/ bebê",   qty: 1 },
-  "aspirador":    { name: "Aspirador nasal",              qty: 1 },
-  "tesoura":      { name: "Tesoura e cortador p/ bebê",   qty: 1 },
-  "escova-mam":   { name: "Escova p/ mamadeira",          qty: 1 },
-  "toalha-cap":   { name: "Toalha com capuz",             qty: 2 },
-  "toalha-fra":   { name: "Toalha fralda",                qty: 2 },
-  "babadores":    { name: "Babadores",                    qty: 2 },
-  "cueiro":       { name: "Cueiro",                       qty: 2 },
-  "fralda-boca":  { name: "Fralda de boca",               qty: 2 },
-  "absorvente":   { name: "Absorvente para seios",        qty: 2 },
-  "cotonete":     { name: "Cotonete",                     qty: 2 },
-  "pomada":       { name: "Pomada anti-assaduras",        qty: 2 },
-  "shampoo":      { name: "Shampoo e condicionador",      qty: 2 },
-  "algodao":      { name: "Algodão",                      qty: 3 },
-  "sabonete":     { name: "Sabonete líquido p/ bebê",     qty: 3 },
-  "lenco":        { name: "Lenço umedecido",              qty: 3 },
-  "fralda-rn":    { name: "Fralda descartável RN",        qty: 3 },
-  "fralda-p":     { name: "Fralda descartável P",         qty: 11 },
-  "fralda-m":     { name: "Fralda descartável M",         qty: 10 },
-  "fralda-g":     { name: "Fralda descartável G",         qty: 10 },
+  "termometro": { name: "Termômetro", qty: 1 },
+  "colher": { name: "Colher de silicone p/ bebê", qty: 1 },
+  "aspirador": { name: "Aspirador nasal", qty: 1 },
+  "tesoura": { name: "Tesoura e cortador p/ bebê", qty: 1 },
+  "escova-mam": { name: "Escova p/ mamadeira", qty: 1 },
+  "toalha-cap": { name: "Toalha com capuz", qty: 2 },
+  "toalha-fra": { name: "Toalha fralda", qty: 2 },
+  "babadores": { name: "Babadores", qty: 2 },
+  "cueiro": { name: "Cueiro", qty: 2 },
+  "fralda-boca": { name: "Fralda de boca", qty: 2 },
+  "absorvente": { name: "Absorvente para seios", qty: 2 },
+  "cotonete": { name: "Cotonete", qty: 2 },
+  "pomada": { name: "Pomada anti-assaduras", qty: 2 },
+  "shampoo": { name: "Shampoo e condicionador", qty: 2 },
+  "algodao": { name: "Algodão", qty: 3 },
+  "sabonete": { name: "Sabonete líquido p/ bebê", qty: 3 },
+  "lenco": { name: "Lenço umedecido", qty: 3 },
+  "fralda-rn": { name: "Fralda descartável RN", qty: 3 },
+  "fralda-p": { name: "Fralda descartável P", qty: 11 },
+  "fralda-m": { name: "Fralda descartável M", qty: 10 },
+  "fralda-g": { name: "Fralda descartável G", qty: 10 },
 };
 
 const SHEET_RSVPS = "rsvps";
@@ -99,6 +100,10 @@ function getClaims_() {
   return claims;
 }
 
+function isEmailGiftMode_(mode) {
+  return mode === "email" || mode === "pix";
+}
+
 function submitRsvp_(payload) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -110,14 +115,10 @@ function submitRsvp_(payload) {
 
     const guests = Math.min(20, Math.max(1, parseInt(payload.guests, 10) || 1));
     const diet = String(payload.diet || "").trim();
-    const giftMode = (payload.giftMode === "pix" || payload.giftMode === "email") ? "email" : "lista";
+    const giftMode = isEmailGiftMode_(payload.giftMode) ? "email" : "lista";
     const gifts = Array.isArray(payload.gifts) ? payload.gifts : [];
-
-    if (giftMode === "lista" && gifts.length === 0) {
-      // allow RSVP without gifts
-    }
-
     const claims = getClaims_();
+    const giftRows = [];
 
     if (giftMode === "lista") {
       for (let i = 0; i < gifts.length; i++) {
@@ -142,6 +143,11 @@ function submitRsvp_(payload) {
           };
         }
         claims[id] = current + qty;
+        giftRows.push({
+          id: id,
+          name: String(g.name || cat.name || id),
+          qty: qty,
+        });
       }
     }
 
@@ -150,20 +156,11 @@ function submitRsvp_(payload) {
     const rsvpSheet = getSheet_(SHEET_RSVPS);
     rsvpSheet.appendRow([rsvpId, name, guests, diet, giftMode, createdAt]);
 
-    if (giftMode === "lista" && gifts.length > 0) {
+    if (giftRows.length) {
       const giftSheet = getSheet_(SHEET_GIFTS);
-      const rows = [];
-      for (let j = 0; j < gifts.length; j++) {
-        const g = gifts[j];
-        const id = String(g.id || "");
-        const qty = parseInt(g.quantity, 10) || 0;
-        if (!id || qty <= 0) continue;
-        const cat = CATALOG[id];
-        const giftName = String(g.name || (cat && cat.name) || id);
-        rows.push([rsvpId, id, giftName, qty]);
-      }
-      for (let k = 0; k < rows.length; k++) {
-        giftSheet.appendRow(rows[k]);
+      for (let k = 0; k < giftRows.length; k++) {
+        const row = giftRows[k];
+        giftSheet.appendRow([rsvpId, row.id, row.name, row.qty]);
       }
     }
 
@@ -175,8 +172,8 @@ function submitRsvp_(payload) {
 }
 
 function buildSuccessMessage_(giftMode, gifts) {
-  if (giftMode === "email" || giftMode === "pix") {
-    return "Obrigada pelo carinho! 🤍 É só mandar para taynamj@gmail.com.";
+  if (isEmailGiftMode_(giftMode)) {
+    return "Obrigada pelo carinho! 🤍 É só mandar para " + GIFT_EMAIL + ".";
   }
   const parts = [];
   for (let i = 0; i < gifts.length; i++) {
@@ -230,10 +227,10 @@ function getAdminData_(key) {
     const createdAt = String(rsvpData[r][5] || "");
 
     totalGuests += guests;
-    if (giftMode === "pix" || giftMode === "email") emailCount++;
+    if (isEmailGiftMode_(giftMode)) emailCount++;
 
     let giftsLabel = "—";
-    if (giftMode === "pix" || giftMode === "email") {
+    if (isEmailGiftMode_(giftMode)) {
       giftsLabel = "E-mail 🤍";
     } else if (giftsByRsvp[id] && giftsByRsvp[id].length) {
       giftsLabel = giftsByRsvp[id].map(function (g) {
@@ -277,7 +274,6 @@ function getAdminData_(key) {
       confirmations: rows.length,
       totalGuests: totalGuests,
       emailCount: emailCount,
-      pixCount: emailCount,
       giftsReserved: giftsReserved,
     },
     rows: rows,
