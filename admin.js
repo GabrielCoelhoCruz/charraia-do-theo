@@ -11,6 +11,11 @@
   const SESSION_KEY = "charraia_admin_ok";
 
   let adminData = null;
+  let editingRow = null;
+  /** @type {Record<string, number>} */
+  let editOriginalGifts = {};
+  /** @type {Record<string, number>} */
+  let editPickedGifts = {};
 
   function isEmailGiftMode(mode) {
     return window.__charraiaShared
@@ -43,9 +48,18 @@
       .replace(/"/g, "&quot;");
   }
 
+  function getGiftPixLabel() {
+    return window.__charraiaShared
+      ? window.__charraiaShared.getGiftPixLabel()
+      : "PIX (email) 🤍";
+  }
+
   function formatGiftDisplay(row, asHtml) {
     if (isEmailGiftMode(row.giftMode)) {
-      return asHtml ? '<span class="email-chip">E-mail 🤍</span>' : "E-mail";
+      const label = row.giftsLabel || getGiftPixLabel();
+      return asHtml
+        ? '<span class="email-chip">' + escapeHtml(label) + "</span>"
+        : label;
     }
     const label = row.giftsLabel || "—";
     return asHtml ? escapeHtml(label) : label;
@@ -70,7 +84,7 @@
     const stats = [
       { num: summary.confirmations, label: "Confirmações" },
       { num: summary.totalGuests, label: "Pessoas no total" },
-      { num: summary.emailCount || 0, label: "E-mail" },
+      { num: summary.emailCount || 0, label: "PIX (email)" },
       { num: summary.giftsReserved, label: "Itens reservados" },
     ];
     el.innerHTML = stats.map((s) =>
@@ -79,6 +93,19 @@
         <div class="admin-stat-label">${s.label}</div>
       </div>`
     ).join("");
+  }
+
+  function rowActionsHtml(r) {
+    const id = escapeHtml(r.id || "");
+    const name = escapeHtml(r.name || "");
+    return `<div class="admin-row-actions">
+      <button type="button" class="admin-btn admin-btn--edit" data-action="edit" data-id="${id}">Editar</button>
+      <button type="button" class="admin-btn admin-btn--delete" data-action="delete" data-id="${id}" data-name="${name}">Apagar</button>
+    </div>`;
+  }
+
+  function findRowById(id) {
+    return (adminData && adminData.rows || []).find((r) => r.id === id) || null;
   }
 
   function renderRows(rows) {
@@ -101,6 +128,7 @@
             <th>Dieta</th>
             <th>Presente</th>
             <th>Quando</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -112,6 +140,7 @@
               <td>${diet}</td>
               <td>${formatGiftDisplay(r, true)}</td>
               <td>${formatDate(r.createdAt)}</td>
+              <td class="admin-table-actions">${rowActionsHtml(r)}</td>
             </tr>`;
           }).join("")}
         </tbody>
@@ -120,13 +149,271 @@
     cards.innerHTML = rows.map((r) => {
       const diet = r.diet ? escapeHtml(r.diet) : "—";
       return `<article class="admin-card">
-        <div class="admin-card-name">${escapeHtml(r.name)}</div>
+        <div class="admin-card-head">
+          <div class="admin-card-name">${escapeHtml(r.name)}</div>
+          ${rowActionsHtml(r)}
+        </div>
         <div class="admin-card-row"><b>Vêm:</b> ${r.guests}</div>
         <div class="admin-card-row"><b>Dieta:</b> ${diet}</div>
         <div class="admin-card-row"><b>Presente:</b> ${formatGiftDisplay(r, false)}</div>
         <div class="admin-card-row"><b>Quando:</b> ${formatDate(r.createdAt)}</div>
       </article>`;
     }).join("");
+  }
+
+  function getCatalogGifts() {
+    const catalog = window.__charraiaCatalog;
+    return (catalog && catalog.GIFTS) || [];
+  }
+
+  function getGiftMeta(id) {
+    return getCatalogGifts().find((g) => g.id === id) || null;
+  }
+
+  function getStockRemaining(giftId) {
+    const stock = (adminData && adminData.stock) || [];
+    const row = stock.find((s) => s.id === giftId);
+    return row ? row.remaining : 0;
+  }
+
+  function getMaxQtyForEdit(giftId) {
+    const meta = getGiftMeta(giftId);
+    if (!meta) return 0;
+    return getStockRemaining(giftId) + (editOriginalGifts[giftId] || 0);
+  }
+
+  function isListaEditMode() {
+    const modeEl = document.querySelector('input[name="edit-gift-mode"]:checked');
+    return modeEl ? modeEl.value === "lista" : true;
+  }
+
+  function syncEditPickedFromRow(row) {
+    editOriginalGifts = {};
+    editPickedGifts = {};
+    (row.gifts || []).forEach((g) => {
+      if (!g.id || g.id === "pix") return;
+      const qty = parseInt(g.quantity, 10) || 0;
+      if (qty <= 0) return;
+      editOriginalGifts[g.id] = qty;
+      editPickedGifts[g.id] = qty;
+    });
+  }
+
+  function collectEditGiftsForSubmit() {
+    return Object.keys(editPickedGifts)
+      .filter((id) => (editPickedGifts[id] || 0) > 0)
+      .map((id) => {
+        const meta = getGiftMeta(id);
+        return {
+          id,
+          name: meta ? meta.name : id,
+          quantity: editPickedGifts[id],
+        };
+      });
+  }
+
+  function renderEditGiftAddSelect() {
+    const select = document.getElementById("edit-gift-add-select");
+    if (!select) return;
+    const options = ['<option value="">Escolher presente…</option>'];
+    getCatalogGifts().forEach((g) => {
+      const max = getMaxQtyForEdit(g.id);
+      const picked = editPickedGifts[g.id] || 0;
+      if (max <= picked) return;
+      options.push(
+        `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name)} (${max - picked} disp.)</option>`
+      );
+    });
+    select.innerHTML = options.join("");
+  }
+
+  function renderEditGiftsList() {
+    const list = document.getElementById("edit-gifts-list");
+    const panel = document.getElementById("edit-gifts-panel");
+    const note = document.getElementById("edit-gifts-note");
+    if (!list || !panel) return;
+
+    if (!isListaEditMode()) {
+      panel.hidden = true;
+      if (note) {
+        note.hidden = false;
+        note.textContent = "Será registrado como " + getGiftPixLabel() + ".";
+      }
+      return;
+    }
+
+    panel.hidden = false;
+    if (note) note.hidden = true;
+
+    const ids = Object.keys(editPickedGifts).filter((id) => (editPickedGifts[id] || 0) > 0);
+    if (!ids.length) {
+      list.innerHTML = '<p class="admin-edit-gifts-empty">Nenhum item da lista. Adicione abaixo.</p>';
+      renderEditGiftAddSelect();
+      return;
+    }
+
+    list.innerHTML = ids.map((id) => {
+      const meta = getGiftMeta(id);
+      const name = meta ? meta.name : id;
+      const qty = editPickedGifts[id];
+      const max = getMaxQtyForEdit(id);
+      return `<div class="admin-edit-gift-row" data-gift-id="${escapeHtml(id)}">
+        <div class="admin-edit-gift-name">
+          ${escapeHtml(name)}
+          <span class="admin-edit-gift-stock">máx. ${max}</span>
+        </div>
+        <div class="admin-edit-gift-qty">
+          <button type="button" data-gift-step="-1" data-gift-id="${escapeHtml(id)}" aria-label="Menos">−</button>
+          <span>${qty}</span>
+          <button type="button" data-gift-step="1" data-gift-id="${escapeHtml(id)}" aria-label="Mais">+</button>
+        </div>
+        <button type="button" class="admin-btn admin-btn--delete" data-gift-remove="${escapeHtml(id)}">Remover</button>
+      </div>`;
+    }).join("");
+
+    renderEditGiftAddSelect();
+  }
+
+  function setEditGiftQty(giftId, qty) {
+    const max = getMaxQtyForEdit(giftId);
+    const next = Math.min(max, Math.max(0, qty));
+    if (next <= 0) {
+      delete editPickedGifts[giftId];
+    } else {
+      editPickedGifts[giftId] = next;
+    }
+    renderEditGiftsList();
+  }
+
+  function addEditGiftFromSelect() {
+    const select = document.getElementById("edit-gift-add-select");
+    if (!select || !select.value) return;
+    const id = select.value;
+    const current = editPickedGifts[id] || 0;
+    const max = getMaxQtyForEdit(id);
+    if (current >= max) return;
+    editPickedGifts[id] = current + 1;
+    select.value = "";
+    renderEditGiftsList();
+  }
+
+  function handleEditGiftClick(e) {
+    const removeBtn = e.target.closest("[data-gift-remove]");
+    if (removeBtn) {
+      delete editPickedGifts[removeBtn.dataset.giftRemove];
+      renderEditGiftsList();
+      return;
+    }
+    const stepBtn = e.target.closest("[data-gift-step]");
+    if (!stepBtn) return;
+    const id = stepBtn.dataset.giftId;
+    const step = parseInt(stepBtn.dataset.giftStep, 10) || 0;
+    setEditGiftQty(id, (editPickedGifts[id] || 0) + step);
+  }
+
+  function openEditModal(row) {
+    editingRow = row;
+    syncEditPickedFromRow(row);
+    document.getElementById("edit-rsvp-id").value = row.id || "";
+    document.getElementById("edit-name").value = row.name || "";
+    document.getElementById("edit-guests").value = row.guests || 1;
+    document.getElementById("edit-diet").value = row.diet || "";
+    const mode = isEmailGiftMode(row.giftMode) ? "email" : "lista";
+    document.querySelectorAll('input[name="edit-gift-mode"]').forEach((el) => {
+      el.checked = el.value === mode;
+    });
+    const err = document.getElementById("edit-error");
+    if (err) err.hidden = true;
+    renderEditGiftsList();
+    document.getElementById("admin-edit-modal").hidden = false;
+    document.getElementById("edit-name").focus();
+  }
+
+  function closeEditModal() {
+    editingRow = null;
+    editOriginalGifts = {};
+    editPickedGifts = {};
+    document.getElementById("admin-edit-modal").hidden = true;
+  }
+
+  async function deleteRow(id, name) {
+    const label = name ? '"' + name + '"' : "esta confirmação";
+    if (!window.confirm("Apagar " + label + "? Os presentes voltam para a lista.")) return;
+
+    try {
+      const result = await window.__charraiaApi.deleteRsvp(id, API_ADMIN_KEY);
+      if (!result.ok) {
+        window.alert(result.message || "Não foi possível apagar.");
+        return;
+      }
+      await loadData();
+    } catch (e) {
+      window.alert("Erro ao apagar. Verifique a conexão e se o Code.gs foi republicado.");
+    }
+  }
+
+  async function saveEdit(e) {
+    e.preventDefault();
+    const err = document.getElementById("edit-error");
+    const id = document.getElementById("edit-rsvp-id").value;
+    const name = document.getElementById("edit-name").value.trim();
+    const guests = parseInt(document.getElementById("edit-guests").value, 10) || 1;
+    const diet = document.getElementById("edit-diet").value.trim();
+    const modeEl = document.querySelector('input[name="edit-gift-mode"]:checked');
+    const giftMode = modeEl ? modeEl.value : "lista";
+
+    if (!name) {
+      if (err) {
+        err.textContent = "Nome obrigatório.";
+        err.hidden = false;
+      }
+      return;
+    }
+
+    const gifts = giftMode === "lista" ? collectEditGiftsForSubmit() : [];
+
+    try {
+      const result = await window.__charraiaApi.updateRsvp({
+        id,
+        name,
+        guests,
+        diet,
+        giftMode,
+        gifts,
+        key: API_ADMIN_KEY,
+      });
+      if (!result.ok) {
+        if (err) {
+          err.textContent = result.message || "Não foi possível salvar.";
+          err.hidden = false;
+        }
+        return;
+      }
+      closeEditModal();
+      await loadData();
+    } catch (e) {
+      if (err) {
+        err.textContent = "Erro ao salvar. Verifique a conexão e se o Code.gs foi republicado.";
+        err.hidden = false;
+      }
+    }
+  }
+
+  function handleRowAction(e) {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const id = btn.dataset.id;
+    if (!id) return;
+
+    if (action === "delete") {
+      deleteRow(id, btn.dataset.name || "");
+      return;
+    }
+    if (action === "edit") {
+      const row = findRowById(id);
+      if (row) openEditModal(row);
+    }
   }
 
   function renderStock(stock) {
@@ -256,6 +543,17 @@
 
     document.getElementById("admin-refresh").addEventListener("click", loadData);
     document.getElementById("admin-export").addEventListener("click", exportCsv);
+    document.getElementById("admin-rows-table").addEventListener("click", handleRowAction);
+    document.getElementById("admin-rows-cards").addEventListener("click", handleRowAction);
+    document.getElementById("admin-edit-form").addEventListener("submit", saveEdit);
+    document.querySelectorAll("[data-close-modal]").forEach((el) => {
+      el.addEventListener("click", closeEditModal);
+    });
+    document.querySelectorAll('input[name="edit-gift-mode"]').forEach((el) => {
+      el.addEventListener("change", renderEditGiftsList);
+    });
+    document.getElementById("edit-gifts-list").addEventListener("click", handleEditGiftClick);
+    document.getElementById("edit-gift-add-btn").addEventListener("click", addEditGiftFromSelect);
 
     if (isLoggedIn()) {
       loadData();

@@ -5,13 +5,19 @@
   padding: clamp(24px, 5vw, 48px);
 }
 
-.admin-login,
-.admin-loading {
+.admin-login:not([hidden]),
+.admin-loading:not([hidden]) {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 60vh;
   text-align: center;
+}
+
+.admin-login[hidden],
+.admin-loading[hidden],
+.admin-app[hidden] {
+  display: none !important;
 }
 
 .admin-login-card {
@@ -262,4 +268,233 @@
   padding: 24px;
   text-align: center;
   color: var(--tinta-tenue);
+}
+
+.admin-table-actions {
+  white-space: nowrap;
+  width: 1%;
+}
+
+.admin-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-btn {
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .03em;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(70, 55, 40, .14);
+  background: var(--creme);
+  color: var(--tinta);
+  cursor: pointer;
+  transition: background .2s, border-color .2s, color .2s;
+}
+
+.admin-btn:hover {
+  border-color: var(--terracota-suave);
+  color: var(--terracota-escuro);
+}
+
+.admin-btn--delete {
+  border-color: rgba(158, 79, 56, .22);
+  color: var(--terracota-escuro);
+}
+
+.admin-btn--delete:hover {
+  background: rgba(194, 103, 74, .1);
+  border-color: var(--terracota);
+}
+
+.admin-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-card-head .admin-card-name {
+  margin-bottom: 0;
+}
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.admin-modal[hidden] {
+  display: none !important;
+}
+
+.admin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(70, 55, 40, .45);
+}
+
+.admin-modal-card {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: min(90vh, 720px);
+  overflow: auto;
+  padding: clamp(24px, 4vw, 32px);
+  background: var(--creme-2);
+  border-radius: var(--radius);
+  border: 1px solid rgba(70, 55, 40, .08);
+  box-shadow: 0 24px 60px rgba(70, 55, 40, .18);
+}
+
+.admin-modal-title {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.6rem;
+  margin: 0 0 1.25rem;
+}
+
+.admin-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-edit-label {
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--tinta-tenue);
+}
+
+.admin-edit-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(70, 55, 40, .12);
+  border-radius: 10px;
+  background: var(--creme);
+  font: inherit;
+  color: var(--tinta);
+}
+
+.admin-edit-input:focus {
+  outline: none;
+  border-color: var(--terracota);
+  box-shadow: 0 0 0 4px rgba(194, 103, 74, .15);
+}
+
+.admin-edit-fieldset {
+  margin: 4px 0 0;
+  padding: 0;
+  border: none;
+}
+
+.admin-edit-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: .95rem;
+  color: var(--tinta-suave);
+  cursor: pointer;
+}
+
+.admin-edit-gifts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.admin-edit-gifts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-edit-gift-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--creme);
+  border: 1px solid rgba(70, 55, 40, .08);
+}
+
+.admin-edit-gift-name {
+  font-size: .9rem;
+  color: var(--tinta);
+  line-height: 1.3;
+}
+
+.admin-edit-gift-stock {
+  display: block;
+  font-size: .72rem;
+  color: var(--tinta-tenue);
+  margin-top: 2px;
+}
+
+.admin-edit-gift-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-edit-gift-qty button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(70, 55, 40, .14);
+  background: var(--creme-2);
+  color: var(--tinta);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.admin-edit-gift-qty span {
+  min-width: 1.2rem;
+  text-align: center;
+  font-weight: 500;
+}
+
+.admin-gift-add {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-edit-gifts-empty {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--tinta-tenue);
+}
+
+.admin-edit-note {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--tinta-tenue);
+  line-height: 1.45;
+}
+
+.admin-edit-error {
+  margin: 0;
+  font-size: .88rem;
+  color: var(--terracota-escuro);
+}
+
+.admin-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
 }

@@ -13,8 +13,14 @@
       : parts.slice(0, -1).join(", ") + " e " + parts[parts.length - 1];
   }
 
+  function getGiftPixLabel() {
+    const catalog = window.__charraiaCatalog;
+    return (catalog && catalog.GIFT_PIX_LABEL) || "PIX (email) 🤍";
+  }
+
   window.__charraiaShared = {
     isEmailGiftMode,
     joinGiftParts,
+    getGiftPixLabel,
   };
 })();

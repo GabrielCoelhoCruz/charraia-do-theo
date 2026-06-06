@@ -73,5 +73,22 @@
     async loadAdminData(key) {
       return apiGet({ action: "admin", key: key });
     },
+
+    async deleteRsvp(id, key) {
+      return apiPost({ action: "admin_delete", key, id });
+    },
+
+    async updateRsvp({ id, name, guests, diet, giftMode, gifts, key }) {
+      return apiPost({
+        action: "admin_update",
+        key,
+        id,
+        name,
+        guests,
+        diet,
+        giftMode,
+        gifts,
+      });
+    },
   };
 })();

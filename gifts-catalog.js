@@ -193,5 +193,6 @@ window.__charraiaCatalog = {
     "higiene": "Higiene & cuidados",
     "fralda": "Fraldas descartáveis"
   },
-  "GIFT_EMAIL": "taynamj@gmail.com"
+  "GIFT_EMAIL": "taynamj@gmail.com",
+  "GIFT_PIX_LABEL": "PIX (email) 🤍"
 };

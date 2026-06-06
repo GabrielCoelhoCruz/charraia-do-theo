@@ -8,6 +8,7 @@
 
 const ADMIN_KEY = "charraia-theo-2026";
 const GIFT_EMAIL = "taynamj@gmail.com";
+const GIFT_PIX_LABEL = "PIX (email) 🤍";
 
 /** @type {Object.<string, {name: string, qty: number}>} */
 const CATALOG = {
@@ -80,9 +81,179 @@ function doPost(e) {
     if (payload.action === "submit") {
       return jsonResponse_(submitRsvp_(payload));
     }
+    if (payload.action === "admin_delete") {
+      return jsonResponse_(deleteRsvp_(payload));
+    }
+    if (payload.action === "admin_update") {
+      return jsonResponse_(updateRsvp_(payload));
+    }
     return jsonResponse_({ ok: false, error: "unknown_action" });
   } catch (err) {
     return jsonResponse_({ ok: false, error: "server", message: String(err) });
+  }
+}
+
+function authorizeAdmin_(key) {
+  const expected = getConfigValue_("ADMIN_KEY") || ADMIN_KEY;
+  return !!(key && key === expected);
+}
+
+function findRsvpRow_(rsvpId) {
+  const sheet = getSheet_(SHEET_RSVPS);
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === rsvpId) {
+      return { sheet: sheet, rowIndex: i + 1, row: data[i] };
+    }
+  }
+  return null;
+}
+
+function getGiftsForRsvp_(rsvpId) {
+  const sheet = getSheet_(SHEET_GIFTS);
+  const data = sheet.getDataRange().getValues();
+  const gifts = [];
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) !== rsvpId) continue;
+    const giftId = String(data[i][1] || "");
+    const qty = parseInt(data[i][3], 10) || 0;
+    if (!giftId || qty <= 0) continue;
+    gifts.push({
+      id: giftId,
+      name: String(data[i][2] || ""),
+      quantity: qty,
+    });
+  }
+  return gifts;
+}
+
+function deleteGiftsForRsvp_(rsvpId) {
+  const sheet = getSheet_(SHEET_GIFTS);
+  const data = sheet.getDataRange().getValues();
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][0]) === rsvpId) {
+      sheet.deleteRow(i + 1);
+    }
+  }
+}
+
+function appendGiftRows_(rsvpId, giftMode, gifts) {
+  const giftSheet = getSheet_(SHEET_GIFTS);
+  const claims = getClaims_();
+  const giftRows = [];
+
+  if (giftMode === "lista") {
+    for (let i = 0; i < gifts.length; i++) {
+      const g = gifts[i];
+      const id = String(g.id || "");
+      const qty = parseInt(g.quantity, 10) || 0;
+      if (!id || id === "pix" || qty <= 0) continue;
+
+      const cat = CATALOG[id];
+      if (!cat) {
+        return { ok: false, error: "validation", message: "Presente inválido: " + id };
+      }
+
+      const current = claims[id] || 0;
+      if (current + qty > cat.qty) {
+        return {
+          ok: false,
+          error: "stock",
+          giftId: id,
+          giftName: cat.name,
+          message: cat.name + " não tem mais unidades disponíveis.",
+        };
+      }
+      claims[id] = current + qty;
+      giftRows.push({
+        id: id,
+        name: String(g.name || cat.name || id),
+        qty: qty,
+      });
+    }
+  }
+
+  for (let k = 0; k < giftRows.length; k++) {
+    const row = giftRows[k];
+    giftSheet.appendRow([rsvpId, row.id, row.name, row.qty]);
+  }
+  if (giftMode === "email") {
+    giftSheet.appendRow([rsvpId, "pix", GIFT_PIX_LABEL, 1]);
+  }
+  return { ok: true };
+}
+
+function deleteRsvp_(payload) {
+  if (!authorizeAdmin_(payload.key)) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const rsvpId = String(payload.id || "");
+  if (!rsvpId) {
+    return { ok: false, error: "validation", message: "ID obrigatório" };
+  }
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const found = findRsvpRow_(rsvpId);
+    if (!found) {
+      return { ok: false, error: "not_found", message: "Confirmação não encontrada." };
+    }
+    deleteGiftsForRsvp_(rsvpId);
+    found.sheet.deleteRow(found.rowIndex);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function updateRsvp_(payload) {
+  if (!authorizeAdmin_(payload.key)) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const rsvpId = String(payload.id || "");
+  if (!rsvpId) {
+    return { ok: false, error: "validation", message: "ID obrigatório" };
+  }
+
+  const name = String(payload.name || "").trim();
+  if (!name) {
+    return { ok: false, error: "validation", message: "Nome obrigatório" };
+  }
+
+  const guests = Math.min(20, Math.max(1, parseInt(payload.guests, 10) || 1));
+  const diet = String(payload.diet || "").trim();
+  const giftMode = isEmailGiftMode_(payload.giftMode) ? "email" : "lista";
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    const found = findRsvpRow_(rsvpId);
+    if (!found) {
+      return { ok: false, error: "not_found", message: "Confirmação não encontrada." };
+    }
+
+    const oldGifts = getGiftsForRsvp_(rsvpId);
+    deleteGiftsForRsvp_(rsvpId);
+
+    const oldMode = isEmailGiftMode_(String(found.row[4] || "")) ? "email" : "lista";
+    const oldListaGifts = oldGifts.filter(function (g) { return String(g.id) !== "pix"; });
+    const gifts = giftMode === "lista"
+      ? (Array.isArray(payload.gifts) ? payload.gifts : oldListaGifts)
+      : [];
+
+    const giftResult = appendGiftRows_(rsvpId, giftMode, gifts);
+    if (!giftResult.ok) {
+      appendGiftRows_(rsvpId, oldMode, oldMode === "lista" ? oldListaGifts : []);
+      return giftResult;
+    }
+
+    found.sheet.getRange(found.rowIndex, 2, 1, 4).setValues([[name, guests, diet, giftMode]]);
+    return { ok: true };
+  } finally {
+    lock.releaseLock();
   }
 }
 
@@ -156,12 +327,14 @@ function submitRsvp_(payload) {
     const rsvpSheet = getSheet_(SHEET_RSVPS);
     rsvpSheet.appendRow([rsvpId, name, guests, diet, giftMode, createdAt]);
 
+    const giftSheet = getSheet_(SHEET_GIFTS);
     if (giftRows.length) {
-      const giftSheet = getSheet_(SHEET_GIFTS);
       for (let k = 0; k < giftRows.length; k++) {
         const row = giftRows[k];
         giftSheet.appendRow([rsvpId, row.id, row.name, row.qty]);
       }
+    } else if (giftMode === "email") {
+      giftSheet.appendRow([rsvpId, "pix", GIFT_PIX_LABEL, 1]);
     }
 
     const message = buildSuccessMessage_(giftMode, gifts);
@@ -231,7 +404,7 @@ function getAdminData_(key) {
 
     let giftsLabel = "—";
     if (isEmailGiftMode_(giftMode)) {
-      giftsLabel = "E-mail 🤍";
+      giftsLabel = GIFT_PIX_LABEL;
     } else if (giftsByRsvp[id] && giftsByRsvp[id].length) {
       giftsLabel = giftsByRsvp[id].map(function (g) {
         return g.quantity + "× " + g.name;
@@ -240,11 +413,13 @@ function getAdminData_(key) {
     }
 
     rows.push({
+      id: id,
       name: name,
       guests: guests,
       diet: diet,
       giftMode: giftMode,
       giftsLabel: giftsLabel,
+      gifts: giftsByRsvp[id] || [],
       createdAt: createdAt,
     });
   }

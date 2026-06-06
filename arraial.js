@@ -203,6 +203,36 @@
     els.forEach((el) => io.observe(el));
   }
 
+  /** On mobile, hide floating admin chip while RSVP block is on screen. */
+  function initOrganizerFloat() {
+    const float = document.querySelector(".organizer-link--float");
+    const rsvp = document.getElementById("rsvp");
+    if (!float || !rsvp || !("IntersectionObserver" in window)) return;
+
+    const mobile = window.matchMedia("(max-width: 820px)");
+    let io = null;
+
+    function sync() {
+      if (io) {
+        io.disconnect();
+        io = null;
+      }
+      if (!mobile.matches) {
+        float.classList.remove("is-collapsed");
+        return;
+      }
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          float.classList.toggle("is-collapsed", en.isIntersecting);
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      io.observe(rsvp);
+    }
+
+    sync();
+    mobile.addEventListener("change", sync);
+  }
+
   function init() {
     buildBunting();
     tick();
@@ -210,6 +240,7 @@
     initStepper();
     initForm();
     initReveal();
+    initOrganizerFloat();
   }
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

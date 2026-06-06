@@ -14,7 +14,12 @@ const giftsJs =
   "/* AUTO-GENERATED — edit catalog.json and run: node scripts/sync-catalog.mjs */\n" +
   "window.__charraiaCatalog = " +
   JSON.stringify(
-    { GIFTS: catalog.GIFTS, GROUP_LABELS: catalog.GROUP_LABELS, GIFT_EMAIL: catalog.GIFT_EMAIL },
+    {
+      GIFTS: catalog.GIFTS,
+      GROUP_LABELS: catalog.GROUP_LABELS,
+      GIFT_EMAIL: catalog.GIFT_EMAIL,
+      GIFT_PIX_LABEL: catalog.GIFT_PIX_LABEL,
+    },
     null,
     2
   ) +
@@ -42,12 +47,22 @@ code = code.replace(
   /const GIFT_EMAIL = "[^"]*";/,
   `const GIFT_EMAIL = ${JSON.stringify(catalog.GIFT_EMAIL)};`
 );
+code = code.replace(
+  /const GIFT_PIX_LABEL = "[^"]*";/,
+  `const GIFT_PIX_LABEL = ${JSON.stringify(catalog.GIFT_PIX_LABEL)};`
+);
 if (!code.includes("const GIFT_EMAIL")) {
   code = code.replace(
     /const ADMIN_KEY = "[^"]*";/,
     (m) => m + `\nconst GIFT_EMAIL = ${JSON.stringify(catalog.GIFT_EMAIL)};`
   );
 }
+if (!code.includes("const GIFT_PIX_LABEL")) {
+  code = code.replace(
+    /const GIFT_EMAIL = [^;]+;/,
+    (m) => m + `\nconst GIFT_PIX_LABEL = ${JSON.stringify(catalog.GIFT_PIX_LABEL)};`
+  );
+}
 fs.writeFileSync(codePath, code, "utf8");
 
-console.log("Synced catalog.json → gifts-catalog.js, Code.gs (CATALOG + GIFT_EMAIL + ADMIN_KEY)");
+console.log("Synced catalog.json → gifts-catalog.js, Code.gs (CATALOG + GIFT_EMAIL + GIFT_PIX_LABEL)");

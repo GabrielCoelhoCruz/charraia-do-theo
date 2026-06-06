@@ -1,5 +1,6 @@
 {
   "GIFT_EMAIL": "taynamj@gmail.com",
+  "GIFT_PIX_LABEL": "PIX (email) 🤍",
   "GIFTS": [
     { "id": "mordedor",     "name": "Mordedor",                     "qty": 1, "mimo": true,  "group": "enxoval" },
     { "id": "naninha",      "name": "Naninha",                      "qty": 1, "mimo": true,  "group": "enxoval" },

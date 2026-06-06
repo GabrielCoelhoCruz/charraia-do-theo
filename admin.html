@@ -58,7 +58,51 @@
 
   <p class="admin-loading" id="admin-loading">Carregando…</p>
 
+  <div class="admin-modal" id="admin-edit-modal" hidden>
+    <div class="admin-modal-backdrop" data-close-modal></div>
+    <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-edit-title">
+      <h2 class="admin-modal-title" id="admin-edit-title">Editar confirmação</h2>
+      <form id="admin-edit-form" class="admin-edit-form">
+        <input type="hidden" id="edit-rsvp-id" />
+        <label class="admin-edit-label" for="edit-name">Nome</label>
+        <input type="text" id="edit-name" class="admin-edit-input" required />
+        <label class="admin-edit-label" for="edit-guests">Quantas pessoas vêm</label>
+        <input type="number" id="edit-guests" class="admin-edit-input" min="1" max="20" required />
+        <label class="admin-edit-label" for="edit-diet">Restrição alimentar</label>
+        <input type="text" id="edit-diet" class="admin-edit-input" placeholder="Opcional" />
+        <fieldset class="admin-edit-fieldset">
+          <legend class="admin-edit-label">Presente</legend>
+          <label class="admin-edit-radio">
+            <input type="radio" name="edit-gift-mode" value="lista" />
+            Lista de presentes
+          </label>
+          <label class="admin-edit-radio">
+            <input type="radio" name="edit-gift-mode" value="email" />
+            PIX (email) 🤍
+          </label>
+        </fieldset>
+        <div class="admin-edit-gifts" id="edit-gifts-panel" hidden>
+          <label class="admin-edit-label">Itens da lista</label>
+          <div class="admin-edit-gifts-list" id="edit-gifts-list"></div>
+          <div class="admin-gift-add">
+            <select id="edit-gift-add-select" class="admin-edit-input" aria-label="Adicionar presente">
+              <option value="">Escolher presente…</option>
+            </select>
+            <button type="button" class="admin-btn" id="edit-gift-add-btn">Adicionar</button>
+          </div>
+        </div>
+        <p class="admin-edit-note" id="edit-gifts-note" hidden></p>
+        <p class="admin-edit-error" id="edit-error" hidden></p>
+        <div class="admin-modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal>Cancelar</button>
+          <button type="submit" class="btn-fill">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="charraia-shared.js"></script>
+  <script src="gifts-catalog.js"></script>
   <script src="api-client.js"></script>
   <script src="admin.js"></script>
 </body>

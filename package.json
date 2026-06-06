@@ -2,6 +2,7 @@
   "name": "charraia-do-theo",
   "private": true,
   "scripts": {
-    "sync-catalog": "node scripts/sync-catalog.mjs"
+    "sync-catalog": "node scripts/sync-catalog.mjs",
+    "dev": "npx --yes serve . -l 3000"
   }
 }
