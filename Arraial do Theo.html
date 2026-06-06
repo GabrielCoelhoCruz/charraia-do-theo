@@ -40,7 +40,7 @@
         </div>
         <figure class="hero-figure">
           <div class="frame">
-            <image-slot id="hero-photo" shape="rect" placeholder="Foto da barriga 🤍" placeholder-caption="arraste uma foto"></image-slot>
+            <image-slot id="hero-photo" shape="rect" src="img.jpg" placeholder="Foto da barriga 🤍" placeholder-caption="arraste uma foto"></image-slot>
           </div>
         </figure>
       </div>
@@ -53,7 +53,7 @@
       <div class="wrap about-grid">
         <div class="about-figure reveal">
           <div class="frame">
-            <image-slot id="belly-photo" shape="rect" placeholder="Foto da barriga ou ultrassom" placeholder-caption="arraste sua foto aqui"></image-slot>
+            <image-slot id="belly-photo" shape="rect" src="img.jpg" placeholder="Foto da barriga ou ultrassom" placeholder-caption="arraste sua foto aqui"></image-slot>
             <span class="tag">à espera do Theo</span>
           </div>
         </div>
@@ -120,7 +120,7 @@
           <div class="gifts-copy">
             <p class="eyebrow">Presentes</p>
             <h2 class="section-title">Um carinho pro <em>enxoval do Theo</em></h2>
-            <p>Montei uma listinha gostosa de escolher — você separa o presente na hora de confirmar presença. Pode ser 1 ou vários, ou um PIX se preferir. 🤍</p>
+            <p>Montei uma listinha gostosa de escolher — você separa o presente na hora de confirmar presença. Pode ser 1 ou vários, ou mandar um carinho por e-mail se preferir. 🤍</p>
             <div class="brand-note">
               <div class="bn-row"><span class="bn-k">Fraldas</span><span class="bn-v">Huggies · Turma da Mônica · Babysec · Pampers</span></div>
               <div class="bn-row"><span class="bn-k">Higiene</span><span class="bn-v">Mustela · Granado · Johnson's · Dove · Huggies</span></div>
@@ -177,7 +177,7 @@
               <label>Presente pro Theo</label>
               <div class="gift-mode">
                 <button type="button" class="gm-opt is-on" data-mode="lista">Escolher da lista</button>
-                <button type="button" class="gm-opt" data-mode="pix">Mandar um PIX</button>
+                <button type="button" class="gm-opt" data-mode="email">Presente por e-mail</button>
               </div>
 
               <div class="gift-panel" data-panel="lista">
@@ -194,12 +194,12 @@
                 <div class="gift-chips" id="gift-chips" hidden></div>
               </div>
 
-              <div class="gift-panel" data-panel="pix" hidden>
+              <div class="gift-panel" data-panel="email" hidden>
                 <div class="pix-card">
-                  <p class="pix-k">PIX por telefone</p>
-                  <div class="pix-num" id="pix-num">(11) 91111-1111</div>
-                  <button type="button" class="pix-copy" id="pix-copy">Copiar telefone</button>
-                  <p class="pix-note">Manda o valor que quiser, com todo carinho. 🤍</p>
+                  <p class="pix-k">Presente por e-mail</p>
+                  <div class="pix-num" id="gift-email">taynamj@gmail.com</div>
+                  <button type="button" class="pix-copy" id="email-copy">Copiar e-mail</button>
+                  <p class="pix-note">Manda o valor que quiser para esse e-mail, com todo carinho. 🤍</p>
                 </div>
               </div>
             </div>

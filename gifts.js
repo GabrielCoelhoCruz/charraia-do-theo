@@ -1,5 +1,5 @@
 /* ============================================================
-   Charraiá do Theo — gift picker (full-screen bottom sheet + PIX)
+   Charraiá do Theo — gift picker (full-screen bottom sheet + e-mail)
    ============================================================ */
 (function () {
   "use strict";
@@ -8,8 +8,7 @@
   const GIFTS = catalog.GIFTS;
   const GROUP_LABELS = catalog.GROUP_LABELS;
 
-  const PIX_PHONE_DISPLAY = "(11) 91111-1111";
-  const PIX_PHONE_RAW = "11911111111";
+  const GIFT_EMAIL = "taynamj@gmail.com";
   const TOTAL_GIFT_UNITS = GIFTS.reduce((s, g) => s + g.qty, 0);
 
   const BRANDS = {
@@ -222,17 +221,17 @@
     if (body) body.scrollTop = 0;
   }
 
-  function initPix() {
-    const copy = $("pix-copy");
+  function initEmail() {
+    const copy = $("email-copy");
     if (!copy) return;
     copy.addEventListener("click", () => {
       const done = () => {
         copy.classList.add("copied");
         copy.textContent = "Copiado ✓";
-        setTimeout(() => { copy.classList.remove("copied"); copy.textContent = "Copiar telefone"; }, 1800);
+        setTimeout(() => { copy.classList.remove("copied"); copy.textContent = "Copiar e-mail"; }, 1800);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(PIX_PHONE_RAW).then(done).catch(done);
+        navigator.clipboard.writeText(GIFT_EMAIL).then(done).catch(done);
       } else { done(); }
     });
   }
@@ -248,8 +247,8 @@
   }
 
   function buildGiftMessage() {
-    if (mode === "pix") {
-      return "Obrigada pelo carinho do PIX! 🤍 É só mandar pelo telefone " + PIX_PHONE_DISPLAY + ".";
+    if (mode === "email") {
+      return "Obrigada pelo carinho! 🤍 É só mandar para " + GIFT_EMAIL + ".";
     }
     const parts = GIFTS.filter((g) => picked[g.id] > 0).map((g) => `${picked[g.id]}x ${g.name}`);
     if (!parts.length) return "";
@@ -303,7 +302,7 @@
   async function init() {
     buildSheet();
     syncSummary();
-    initPix();
+    initEmail();
     bindUi();
     await loadClaimsFromApi();
     rebuildAllRows();

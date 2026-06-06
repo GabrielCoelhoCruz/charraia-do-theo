@@ -110,7 +110,7 @@ function submitRsvp_(payload) {
 
     const guests = Math.min(20, Math.max(1, parseInt(payload.guests, 10) || 1));
     const diet = String(payload.diet || "").trim();
-    const giftMode = payload.giftMode === "pix" ? "pix" : "lista";
+    const giftMode = (payload.giftMode === "pix" || payload.giftMode === "email") ? "email" : "lista";
     const gifts = Array.isArray(payload.gifts) ? payload.gifts : [];
 
     if (giftMode === "lista" && gifts.length === 0) {
@@ -176,8 +176,8 @@ function submitRsvp_(payload) {
 }
 
 function buildSuccessMessage_(giftMode, gifts) {
-  if (giftMode === "pix") {
-    return "Obrigada pelo carinho do PIX! 🤍";
+  if (giftMode === "email" || giftMode === "pix") {
+    return "Obrigada pelo carinho! 🤍 É só mandar para taynamj@gmail.com.";
   }
   const parts = [];
   for (let i = 0; i < gifts.length; i++) {
@@ -218,7 +218,7 @@ function getAdminData_(key) {
 
   const claims = getClaims_();
   let totalGuests = 0;
-  let pixCount = 0;
+  let emailCount = 0;
   let giftsReserved = 0;
   const rows = [];
 
@@ -231,11 +231,11 @@ function getAdminData_(key) {
     const createdAt = String(rsvpData[r][5] || "");
 
     totalGuests += guests;
-    if (giftMode === "pix") pixCount++;
+    if (giftMode === "pix" || giftMode === "email") emailCount++;
 
     let giftsLabel = "—";
-    if (giftMode === "pix") {
-      giftsLabel = "PIX 🤍";
+    if (giftMode === "pix" || giftMode === "email") {
+      giftsLabel = "E-mail 🤍";
     } else if (giftsByRsvp[id] && giftsByRsvp[id].length) {
       giftsLabel = giftsByRsvp[id].map(function (g) {
         return g.quantity + "× " + g.name;
@@ -277,7 +277,8 @@ function getAdminData_(key) {
     summary: {
       confirmations: rows.length,
       totalGuests: totalGuests,
-      pixCount: pixCount,
+      emailCount: emailCount,
+      pixCount: emailCount,
       giftsReserved: giftsReserved,
     },
     rows: rows,

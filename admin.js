@@ -45,7 +45,7 @@
     const stats = [
       { num: summary.confirmations, label: "Confirmações" },
       { num: summary.totalGuests, label: "Pessoas no total" },
-      { num: summary.pixCount, label: "PIX" },
+      { num: summary.emailCount != null ? summary.emailCount : summary.pixCount, label: "E-mail" },
       { num: summary.giftsReserved, label: "Itens reservados" },
     ];
     el.innerHTML = stats.map((s) =>
@@ -81,8 +81,8 @@
         <tbody>
           ${rows.map((r) => {
             const diet = r.diet ? escapeHtml(r.diet) : "—";
-            const gift = r.giftMode === "pix"
-              ? '<span class="pix-chip">PIX 🤍</span>'
+            const gift = (r.giftMode === "pix" || r.giftMode === "email")
+              ? '<span class="pix-chip">E-mail 🤍</span>'
               : escapeHtml(r.giftsLabel || "—");
             return `<tr>
               <td>${escapeHtml(r.name)}</td>
@@ -97,7 +97,7 @@
 
     cards.innerHTML = rows.map((r) => {
       const diet = r.diet ? escapeHtml(r.diet) : "—";
-      const gift = r.giftMode === "pix" ? "PIX 🤍" : escapeHtml(r.giftsLabel || "—");
+      const gift = (r.giftMode === "pix" || r.giftMode === "email") ? "E-mail 🤍" : escapeHtml(r.giftsLabel || "—");
       return `<article class="admin-card">
         <div class="admin-card-name">${escapeHtml(r.name)}</div>
         <div class="admin-card-row"><b>Vêm:</b> ${r.guests}</div>
@@ -145,7 +145,7 @@
     const header = ["Nome", "Vêm", "Dieta", "Presente", "Quando"];
     const lines = [header.join(";")];
     adminData.rows.forEach((r) => {
-      const gift = r.giftMode === "pix" ? "PIX" : (r.giftsLabel || "");
+      const gift = (r.giftMode === "pix" || r.giftMode === "email") ? "E-mail" : (r.giftsLabel || "");
       const row = [
         r.name,
         r.guests,
