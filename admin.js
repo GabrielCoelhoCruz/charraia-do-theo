@@ -1,14 +1,22 @@
 /* ============================================================
    Charraiá do Theo — admin panel
-   Access: admin.html?key=YOUR_ADMIN_KEY
+   Access: admin.html (senha na tela de login)
    ============================================================ */
 (function () {
   "use strict";
 
+  const ADMIN_PASSWORD = "xadotheo";
+  const API_ADMIN_KEY = "charraia-theo-2026";
+  const SESSION_KEY = "charraia_admin_ok";
+
   let adminData = null;
 
-  function getKey() {
-    return new URLSearchParams(window.location.search).get("key") || "";
+  function isLoggedIn() {
+    return sessionStorage.getItem(SESSION_KEY) === "1";
+  }
+
+  function setLoggedIn() {
+    sessionStorage.setItem(SESSION_KEY, "1");
   }
 
   function formatDate(iso) {
@@ -28,15 +36,17 @@
       .replace(/"/g, "&quot;");
   }
 
-  function showGate() {
+  function showLogin(showError) {
     document.getElementById("admin-loading").hidden = true;
-    document.getElementById("admin-gate").hidden = false;
+    document.getElementById("admin-login").hidden = false;
     document.getElementById("admin-app").hidden = true;
+    const err = document.getElementById("admin-login-error");
+    if (err) err.hidden = !showError;
   }
 
   function showApp() {
     document.getElementById("admin-loading").hidden = true;
-    document.getElementById("admin-gate").hidden = true;
+    document.getElementById("admin-login").hidden = true;
     document.getElementById("admin-app").hidden = false;
   }
 
@@ -164,27 +174,24 @@
     URL.revokeObjectURL(a.href);
   }
 
-  async function load() {
-    const key = getKey();
-    if (!key) {
-      showGate();
-      return;
-    }
-
+  async function loadData() {
     if (!window.__charraiaApi || !window.__charraiaApi.isConfigured()) {
+      document.getElementById("admin-loading").hidden = false;
+      document.getElementById("admin-login").hidden = true;
+      document.getElementById("admin-app").hidden = true;
       document.getElementById("admin-loading").textContent =
         "API não configurada. Cole a URL do Apps Script em api-client.js (veja SETUP.md).";
       return;
     }
 
     document.getElementById("admin-loading").hidden = false;
-    document.getElementById("admin-gate").hidden = true;
+    document.getElementById("admin-login").hidden = true;
     document.getElementById("admin-app").hidden = true;
 
     try {
-      const data = await window.__charraiaApi.loadAdminData(key);
+      const data = await window.__charraiaApi.loadAdminData(API_ADMIN_KEY);
       if (!data.ok) {
-        showGate();
+        showLogin(false);
         return;
       }
       adminData = data;
@@ -201,17 +208,45 @@
       showApp();
     } catch (e) {
       document.getElementById("admin-loading").hidden = false;
+      document.getElementById("admin-login").hidden = true;
+      document.getElementById("admin-app").hidden = true;
       document.getElementById("admin-loading").textContent =
         "Erro ao carregar. Verifique a conexão e a URL da API.";
     }
   }
 
-  document.getElementById("admin-refresh").addEventListener("click", load);
-  document.getElementById("admin-export").addEventListener("click", exportCsv);
+  function init() {
+    const form = document.getElementById("admin-login-form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("admin-password");
+      const pwd = (input && input.value) || "";
+      if (pwd !== ADMIN_PASSWORD) {
+        showLogin(true);
+        if (input) {
+          input.focus();
+          input.select();
+        }
+        return;
+      }
+      setLoggedIn();
+      if (input) input.value = "";
+      loadData();
+    });
+
+    document.getElementById("admin-refresh").addEventListener("click", loadData);
+    document.getElementById("admin-export").addEventListener("click", exportCsv);
+
+    if (isLoggedIn()) {
+      loadData();
+    } else {
+      showLogin(false);
+    }
+  }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", load);
+    document.addEventListener("DOMContentLoaded", init);
   } else {
-    load();
+    init();
   }
 })();

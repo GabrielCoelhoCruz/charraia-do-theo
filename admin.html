@@ -12,17 +12,25 @@
 </head>
 <body class="admin-body">
 
-  <div id="admin-gate" class="admin-gate" hidden>
-    <div class="admin-gate-card">
+  <div id="admin-login" class="admin-login" hidden>
+    <div class="admin-login-card">
       <p class="eyebrow">Charraiá do Theo</p>
-      <h1>Acesso restrito</h1>
-      <p>Esta página é só para quem organiza o chá. Use o link com a senha correta.</p>
+      <h1>Confirmados</h1>
+      <p class="admin-login-hint">Digite a senha para ver quem já confirmou presença.</p>
+      <form id="admin-login-form" class="admin-login-form" autocomplete="off">
+        <label class="admin-login-label" for="admin-password">Senha</label>
+        <input type="password" id="admin-password" class="admin-login-input" placeholder="••••••••" required />
+        <p class="admin-login-error" id="admin-login-error" hidden>Senha incorreta. Tenta de novo.</p>
+        <button type="submit" class="btn-fill admin-login-submit">Entrar</button>
+      </form>
+      <a class="admin-back-link" href="/">← Voltar ao site</a>
     </div>
   </div>
 
   <div id="admin-app" class="admin-app" hidden>
     <header class="admin-top">
       <div>
+        <a class="admin-back-link admin-back-link--top" href="/">← Voltar ao site</a>
         <p class="eyebrow">Charraiá do Theo</p>
         <h1 class="admin-title">Confirmados <span class="emo">🌽</span></h1>
       </div>
