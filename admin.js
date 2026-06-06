@@ -6,6 +6,8 @@
   "use strict";
 
   const ADMIN_PASSWORD = "xadotheo";
+  /** Must match ADMIN_KEY in google-apps-script/Code.gs */
+  const API_ADMIN_KEY = "charraia-theo-2026";
   const SESSION_KEY = "charraia_admin_ok";
 
   let adminData = null;
@@ -197,8 +199,18 @@
     document.getElementById("admin-app").hidden = true;
 
     try {
-      const data = await window.__charraiaApi.loadAdminData(ADMIN_PASSWORD);
+      const data = await window.__charraiaApi.loadAdminData(API_ADMIN_KEY);
       if (!data.ok) {
+        if (data.error === "unauthorized") {
+          document.getElementById("admin-loading").hidden = true;
+          showLogin(true);
+          const err = document.getElementById("admin-login-error");
+          if (err) {
+            err.textContent = "Não foi possível carregar os dados. Verifique se o Code.gs foi republicado.";
+            err.hidden = false;
+          }
+          return;
+        }
         showLogin(false);
         return;
       }

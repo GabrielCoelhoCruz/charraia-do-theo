@@ -39,17 +39,13 @@ code = code.replace(
   catalogBlock
 );
 code = code.replace(
-  /const ADMIN_KEY = "[^"]*";/,
-  'const ADMIN_KEY = "xadotheo";'
-);
-code = code.replace(
   /const GIFT_EMAIL = "[^"]*";/,
   `const GIFT_EMAIL = ${JSON.stringify(catalog.GIFT_EMAIL)};`
 );
 if (!code.includes("const GIFT_EMAIL")) {
   code = code.replace(
     /const ADMIN_KEY = "[^"]*";/,
-    `const ADMIN_KEY = "xadotheo";\nconst GIFT_EMAIL = ${JSON.stringify(catalog.GIFT_EMAIL)};`
+    (m) => m + `\nconst GIFT_EMAIL = ${JSON.stringify(catalog.GIFT_EMAIL)};`
   );
 }
 fs.writeFileSync(codePath, code, "utf8");

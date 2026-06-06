@@ -12,7 +12,7 @@ Guia para conectar o site à planilha Google. Faça isso **uma vez** antes de co
 1. Na planilha: **Extensões → Apps Script**.
 2. Apague o conteúdo padrão de `Code.gs`.
 3. Copie todo o arquivo [`google-apps-script/Code.gs`](google-apps-script/Code.gs) do projeto e cole no editor.
-4. A senha do admin está em `ADMIN_KEY` (padrão: `xadotheo`). Altere se quiser.
+4. A chave da API admin está em `ADMIN_KEY` (padrão: `charraia-theo-2026`). A senha da tela de login está em `admin.js` (`xadotheo`).
 5. Salve (Ctrl+S).
 
 ## 3. Rodar o setup (uma vez)
@@ -82,6 +82,6 @@ Guarde o link do admin nos favoritos. **Não** coloque esse link no convite púb
 | Problema | Solução |
 |----------|---------|
 | "API não configurada" | Cole a URL do Web App em `api-client.js` |
-| Admin não carrega dados | Republicue o `Code.gs` com `ADMIN_KEY` igual à senha do admin |
+| Admin não carrega dados | `ADMIN_KEY` no Code.gs deve ser `charraia-theo-2026`; republicue o Web App |
 | Confirmação não salva | Rode `setupSheets()` e republicue o Web App |
 | Estoque não atualiza | Nova implantação após mudar o script; limpe cache do navegador |

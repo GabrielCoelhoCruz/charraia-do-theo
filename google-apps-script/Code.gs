@@ -6,7 +6,7 @@
  * Keep CATALOG in sync with catalog.json (run: node scripts/sync-catalog.mjs).
  */
 
-const ADMIN_KEY = "xadotheo";
+const ADMIN_KEY = "charraia-theo-2026";
 const GIFT_EMAIL = "taynamj@gmail.com";
 
 /** @type {Object.<string, {name: string, qty: number}>} */
