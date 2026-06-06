@@ -162,9 +162,8 @@ function submitRsvp_(payload) {
         const giftName = String(g.name || (cat && cat.name) || id);
         rows.push([rsvpId, id, giftName, qty]);
       }
-      if (rows.length) {
-        const startRow = giftSheet.getLastRow() + 1;
-        giftSheet.getRange(startRow, 1, startRow + rows.length - 1, 4).setValues(rows);
+      for (let k = 0; k < rows.length; k++) {
+        giftSheet.appendRow(rows[k]);
       }
     }
 
