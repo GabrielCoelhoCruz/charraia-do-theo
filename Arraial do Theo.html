@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-hero="centered">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Charraiá do Theo · Chá de bebê</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="arraial.css" />
+</head>
+<body>
+
+  <!-- ===== Sticky header ===== -->
+  <header class="topbar">
+    <div class="brand">Charraiá do Theo <span class="dot">🌽</span></div>
+    <a class="btn-ghost" href="#rsvp">Confirmar presença</a>
+  </header>
+
+  <main>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero" id="topo" data-screen-label="Hero">
+      <div class="bunting" data-count="15"></div>
+
+      <div class="hero-inner">
+        <p class="eyebrow">Chá de bebê · Arraiá junino</p>
+        <h1><span class="hl">Vem pro</span> <span class="hl em">Charraiá</span> <span class="hl">do Theo <span class="corn">🌽</span></span></h1>
+        <p class="lede">Bora celebrar a chegada do nosso menino com quentão de mentirinha, fogueira e muito amor.</p>
+        <div class="date-chip">
+          <span>Sábado, 04 de julho de 2026</span>
+          <span class="sep"></span>
+          <span>17h</span>
+        </div>
+        <div class="countdown" id="countdown" aria-label="Contagem regressiva">
+          <div class="count-cell"><div class="count-num" id="cd-d">0</div><div class="count-label">dias</div></div>
+          <div class="count-cell"><div class="count-num" id="cd-h">00</div><div class="count-label">horas</div></div>
+          <div class="count-cell"><div class="count-num" id="cd-m">00</div><div class="count-label">min</div></div>
+          <div class="count-cell"><div class="count-num" id="cd-s">00</div><div class="count-label">seg</div></div>
+        </div>
+        <figure class="hero-figure">
+          <div class="frame">
+            <image-slot id="hero-photo" shape="rect" placeholder="Foto da barriga 🤍" placeholder-caption="arraste uma foto"></image-slot>
+          </div>
+        </figure>
+      </div>
+
+      <div class="scroll-cue">role pra baixo<span class="line"></span></div>
+    </section>
+
+    <!-- ===== About ===== -->
+    <section class="bg-areia" id="sobre" data-screen-label="Sobre">
+      <div class="wrap about-grid">
+        <div class="about-figure reveal">
+          <div class="frame">
+            <image-slot id="belly-photo" shape="rect" placeholder="Foto da barriga ou ultrassom" placeholder-caption="arraste sua foto aqui"></image-slot>
+            <span class="tag">à espera do Theo</span>
+          </div>
+        </div>
+        <div class="about-copy reveal d1">
+          <p class="eyebrow">A nossa história</p>
+          <h2 class="section-title">Tá chegando <em>gente nova</em> <span class="emo">🤍</span></h2>
+          <p>Faz quase nove meses que esse pequeno mexe com a gente — e agora a contagem é de verdade.</p>
+          <p>Queria muito te ter por perto pra rir, comer canjica e celebrar o Theo antes dele chegar pra bagunçar (do jeito mais lindo) a nossa vida.</p>
+          <p class="signoff">vem? a gente te espera. 🌽</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Event info ===== -->
+    <section id="evento" data-screen-label="Evento">
+      <div class="wrap">
+        <div class="info-head reveal">
+          <p class="eyebrow flank">Os detalhes</p>
+          <h2 class="section-title">Anota aí no <em>caderninho</em></h2>
+        </div>
+        <div class="cards">
+
+          <div class="card reveal">
+            <div class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
+            </div>
+            <div class="k">Quando</div>
+            <div class="v">04 de julho</div>
+            <div class="sub">Sábado · a partir das 17h</div>
+          </div>
+
+          <div class="card reveal d1">
+            <div class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+            </div>
+            <div class="k">Onde</div>
+            <div class="v">Jaguaré, São Paulo</div>
+            <div class="sub">Av. Miguel Frias e Vasconcelos, 756 · 05345-000</div>
+            <div class="maps">
+              <a href="https://www.google.com/maps/search/?api=1&query=Av.+Miguel+Frias+e+Vasconcelos,+756,+Jaguar%C3%A9,+S%C3%A3o+Paulo+-+SP" target="_blank" rel="noopener">
+                Abrir no mapa
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="card reveal d2">
+            <div class="ic">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5 5l1.8 1.8M17.2 17.2 19 19M19 5l-1.8 1.8M6.8 17.2 5 19"/></svg>
+            </div>
+            <div class="k">Clima</div>
+            <div class="v">Vibe de arraial</div>
+            <div class="sub">Tons terrosos, xadrez sutil e a sua melhor energia.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Gifts ===== -->
+    <section class="bg-areia" id="presentes" data-screen-label="Presentes">
+      <div class="wrap reveal">
+        <div class="gifts-inner">
+          <div class="gifts-copy">
+            <p class="eyebrow">Presentes</p>
+            <h2 class="section-title">Um carinho pro <em>enxoval do Theo</em></h2>
+            <p>Montei uma listinha gostosa de escolher — você separa o presente na hora de confirmar presença. Pode ser 1 ou vários, ou um PIX se preferir. 🤍</p>
+            <div class="brand-note">
+              <div class="bn-row"><span class="bn-k">Fraldas</span><span class="bn-v">Huggies · Turma da Mônica · Babysec · Pampers</span></div>
+              <div class="bn-row"><span class="bn-k">Higiene</span><span class="bn-v">Mustela · Granado · Johnson's · Dove · Huggies</span></div>
+            </div>
+          </div>
+          <a class="btn-fill" href="#rsvp">
+            Escolher presente
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RSVP ===== -->
+    <section class="rsvp" id="rsvp" data-screen-label="RSVP">
+      <div class="bunting" data-count="15"></div>
+      <div class="wrap rsvp-grid" style="margin-top: clamp(30px,5vw,56px);">
+        <div class="rsvp-intro reveal">
+          <p class="eyebrow">Confirme presença</p>
+          <h2 class="section-title">Vai vir, <em>né?</em> <span class="emo">🌽</span></h2>
+          <p>Me conta rapidinho pra eu já ir separando a canjica e guardando o seu lugar na fogueira.</p>
+          <div class="deet">
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>
+              Sábado, 04 de julho · 17h
+            </div>
+            <div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>
+              Av. Miguel Frias e Vasconcelos, 756 · Jaguaré
+            </div>
+          </div>
+        </div>
+
+        <div class="rsvp-card reveal d1" id="rsvp-card">
+          <form class="rsvp-form" id="rsvp-form" novalidate>
+            <div class="field">
+              <label for="name">Seu nome</label>
+              <input type="text" id="name" name="name" placeholder="Como te chamam?" autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="guests">Quantas pessoas vêm</label>
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="Menos um">−</button>
+                <input type="number" id="guests" name="guests" value="1" min="1" max="20" inputmode="numeric" />
+                <button type="button" data-step="1" aria-label="Mais um">+</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="diet">Alguma restrição alimentar?</label>
+              <textarea id="diet" name="diet" placeholder="Vegetariano, sem lactose, alergias… (ou deixa em branco)"></textarea>
+            </div>
+
+            <div class="field gift-field">
+              <label>Presente pro Theo</label>
+              <div class="gift-mode">
+                <button type="button" class="gm-opt is-on" data-mode="lista">Escolher da lista</button>
+                <button type="button" class="gm-opt" data-mode="pix">Mandar um PIX</button>
+              </div>
+
+              <div class="gift-panel" data-panel="lista">
+                <button type="button" class="gift-open" id="gift-open">
+                  <span class="go-ic" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v8.5H4V12M2.5 7.5h19V12h-19zM12 7.5v13M12 7.5S10.5 3.5 8 3.5a2 2 0 0 0 0 4ZM12 7.5s1.5-4 4-4a2 2 0 0 1 0 4Z"/></svg>
+                  </span>
+                  <span class="go-text">
+                    <span class="go-title">Escolher da listinha</span>
+                    <span class="go-sub" id="gift-open-sub">70 presentes na lista · toque para escolher</span>
+                  </span>
+                  <svg class="go-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+                <div class="gift-chips" id="gift-chips" hidden></div>
+              </div>
+
+              <div class="gift-panel" data-panel="pix" hidden>
+                <div class="pix-card">
+                  <p class="pix-k">PIX por telefone</p>
+                  <div class="pix-num" id="pix-num">(11) 91111-1111</div>
+                  <button type="button" class="pix-copy" id="pix-copy">Copiar telefone</button>
+                  <p class="pix-note">Manda o valor que quiser, com todo carinho. 🤍</p>
+                </div>
+              </div>
+            </div>
+            <div class="submit-row">
+              <button type="submit" class="btn-fill btn-submit">
+                <span class="btn-label">Confirmar presença</span>
+                <span class="heart">🤍</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="rsvp-success" aria-live="polite">
+            <span class="big-heart">🌽</span>
+            <h3>Eba, <span id="success-name">você</span>!</h3>
+            <p>Tô te esperando no Charraiá. Anota aí: 04/07, às 17h. 🤍</p>
+            <p class="success-gift" id="success-gift" hidden></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Footer ===== -->
+    <footer class="foot" data-screen-label="Footer">
+      <div class="bunting" data-count="13"></div>
+      <div class="wrap">
+        <h2>Te espero no <em>Charraiá</em> <span class="emo">🌽</span></h2>
+        <a class="contact" href="https://wa.me/5511999999999" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.5 8.5 0 0 1-12.5 7.5L3 21l2-5.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 9.5c0 4 2 6 6 6"/></svg>
+          Dúvidas? Chama no WhatsApp · (11) 99999-9999
+        </a>
+        <div class="made">feito com amor pra chegada do Theo</div>
+      </div>
+    </footer>
+
+  </main>
+
+  <div id="confetti" aria-hidden="true"></div>
+
+  <!-- ===== Gift bottom sheet ===== -->
+  <div class="sheet-backdrop" id="gift-sheet" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Lista de presentes do Theo">
+      <div class="sheet-head">
+        <div class="sheet-grabber"></div>
+        <div class="sheet-head-row">
+          <div>
+            <p class="sheet-eyebrow">Presentes do Theo</p>
+            <h3 class="sheet-title">Escolha com carinho <span class="emo">🤍</span></h3>
+          </div>
+          <button type="button" class="sheet-close" id="sheet-close" aria-label="Fechar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <div class="sheet-tabs" id="sheet-tabs">
+          <button type="button" class="st-tab is-on" data-cat="all">Tudo</button>
+          <button type="button" class="st-tab" data-cat="enxoval">Enxoval</button>
+          <button type="button" class="st-tab" data-cat="higiene">Higiene</button>
+          <button type="button" class="st-tab" data-cat="fralda">Fraldas</button>
+        </div>
+      </div>
+      <div class="sheet-body" id="sheet-body"></div>
+      <div class="sheet-foot">
+        <div class="sheet-count" id="sheet-count">Nenhum presente ainda</div>
+        <button type="button" class="btn-fill sheet-confirm" id="sheet-confirm">
+          Pronto <span class="heart">🤍</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tweaks-root"></div>
+
+  <script src="image-slot.js"></script>
+  <script src="gifts-catalog.js"></script>
+  <script src="api-client.js"></script>
+  <script src="gifts.js"></script>
+  <script src="arraial.js"></script>
+
+  <!-- Tweaks (React island) -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+  <script type="text/babel" src="tweaks-app.jsx"></script>
+
+</body>
+</html>

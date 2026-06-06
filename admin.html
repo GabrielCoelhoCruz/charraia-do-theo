@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin · Charraiá do Theo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="arraial.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+
+  <div id="admin-gate" class="admin-gate" hidden>
+    <div class="admin-gate-card">
+      <p class="eyebrow">Charraiá do Theo</p>
+      <h1>Acesso restrito</h1>
+      <p>Esta página é só para quem organiza o chá. Use o link com a senha correta.</p>
+    </div>
+  </div>
+
+  <div id="admin-app" class="admin-app" hidden>
+    <header class="admin-top">
+      <div>
+        <p class="eyebrow">Charraiá do Theo</p>
+        <h1 class="admin-title">Confirmados <span class="emo">🌽</span></h1>
+      </div>
+      <button type="button" class="btn-ghost admin-refresh" id="admin-refresh">Atualizar</button>
+    </header>
+
+    <div class="admin-summary" id="admin-summary"></div>
+
+    <section class="admin-section">
+      <h2 class="admin-section-title">Quem confirmou</h2>
+      <div class="admin-table-wrap" id="admin-rows-table"></div>
+      <div class="admin-cards" id="admin-rows-cards"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2 class="admin-section-title">Estoque da lista</h2>
+      <div class="admin-table-wrap" id="admin-stock-table"></div>
+    </section>
+
+    <div class="admin-actions">
+      <button type="button" class="btn-fill" id="admin-export">Exportar CSV</button>
+      <a class="btn-ghost admin-sheet-link" id="admin-sheet-link" href="#" target="_blank" rel="noopener" hidden>Abrir planilha ↗</a>
+    </div>
+  </div>
+
+  <p class="admin-loading" id="admin-loading">Carregando…</p>
+
+  <script src="api-client.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
